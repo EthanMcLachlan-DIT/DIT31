@@ -1,4 +1,4 @@
-#20200523_environmentalAssessmentGUI_v1.2
+#20200528_environmentalAssessmentGUI_v1.21
 #ethanMclachlan with help from Chase Meister and mlj
 
 ##change log
