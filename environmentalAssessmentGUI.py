@@ -1,11 +1,8 @@
-#20200610_environmentalAssessmentGUI_v1.33
-#ethanMclachlan with help from Chase Meister and T-Bone
+#20200617_environmentalAssessmentGUI_v1.4
+#ethanMclachlan
 
 ##change log
-#1.3 tile 1 and 2
-#1.31 tile 3 and 4
-#1.33 smashed out the rest and now all tiles are added
-#1.4 when everything works and add game tiles and then score
+#1.4 when everything works add score and ending
 
 # import the library
 from appJar import gui
@@ -15,23 +12,26 @@ from appJar import gui
 items = ["plastic bottle","pile of leaves","hobo","plastic bag","the gardeners lost secateurs","dog poo",
         "nylon fishing line","descarded fish and chips in paper","batteries","litter","noDiscard"]
      
-score = 0  #score is split into categories to tell you how well you did.
+score = 0  
 holding = []  #list of items you are holding.        
 
 ##Class and Function stuff
 class Tile:
-    def __init__(self, text, yesLocation, noLocation, isContinue, addScore = 0, item = None, isAppend = None, itemCondID = None, condYesLocations = None):
+    def __init__(self, text, yesLocation, noLocation, isContinue, addScore = 0, item = None, isAppend = None, itemCondID = None, condYesLocations = None, func = None):
         self.text = text
         self.yesLocation = yesLocation
         self.noLocation = noLocation
         self.isContinue = isContinue
-        self.addScore = addScore # 1 to add score when answer is Yes, -1 to add score when answer is No, 0 to not change score
+        self.addScore = addScore 
         self.item = item
         self.isAppend = isAppend
         self.itemCondID = itemCondID
         self.condYesLocations = condYesLocations
+        self.func = func
         
     def displayTile(self):
+        if self.func is not None:
+            self.func()
         app.setLabel("text",self.text)
         if(self.isAppend != None):
             self.appendRemove()
@@ -49,11 +49,24 @@ class Tile:
             holding.remove(self.item)
             
 
+def endCheck():
+    if len(holding) != 0 or "noDiscard" in holding:
+        tile.append(Tile("Would you like to put all of the recycling in the recycling bin?",137,138,False))
+        tile.append(Tile("You put all of the recycling in the bin sit down and enjoy your lunch. YOU WIN!",None,None,None))
+        tile.append(Tile("You sit down and enjoy your lunch with your collection of recycling. YOU WIN!",None,None,None))
+    else:
+        tile.append(Tile("You sit down and enjoy your lunch. YOU WIN!",None,None,None))
+
 def updateButtons():
     if(tile[current].isContinue):
         app.hideButton("No")
         app.hideButton("Yes")
         app.showButton("Continue")
+    elif tile[current].isContinue is None and tile[current].yesLocation is None and tile[current].noLocation is None:
+        print("finished")
+        app.hideButton("No")
+        app.hideButton("Yes")        
+        app.hideButton("Continue")
     else:
         app.hideButton("Continue")
         app.showButton("Yes")   
@@ -75,13 +88,6 @@ def press(button):
     if(tile[current].isContinue):
         if button == "Continue":
             current = tile[current].yesLocation
-    elif (tile[current].isContinue) == None:
-        print("finished")
-        '''
-        Tile("Would you like to put all of the recycling in the recycling bin?",135,136,False),
-        Tile("You put all of the recycling in the bin sit down and enjoy your lunch. YOU WIN!",None,None,None),
-        Tile("You sit down and enjoy your lunch with your collection of recycling.",None,None,None)
-        '''        
     else:
         if button == "Yes":
             current = tile[current].yesLocation
@@ -103,7 +109,7 @@ app.addLabel("text")
 app.addButtons(["Yes","No"],press)
 app.addButton("Continue",press)
 
-# question/statement, what it goes to if you press yes or continue write none if there is a condition, what it goes to if you press no, false is yes\no and true is continue, if we want to change score when answer ==no (addScore = -1), when answer ==yes (addScore = 1), any required key words(for condition yesLocation has to == none and no Location has to == none
+# question/statement, what it goes to if you press yes or continue write none if there is a condition, what it goes to if you press no, false is yes\no and true is continue, if we want to change score addScore = 1, any required key words(for condition yesLocation has to == none and no Location has to == none
 
 tile = [
 #scenario 0
@@ -115,12 +121,13 @@ your journey walking through the park when...""",1,1,True),
 Tile(".... You come across a "+(items[0])+"! \n Would you like to pick up the "+(items[0])+"?",2,3,False),
 Tile("You continue on your journey with the "+(items[0])+" in hand.",4,4,True,item = 0,isAppend = True),
 Tile("You leave the "+(items[0])+" on the ground and continue on your journey.",4,4,True),
+Tile("skip to end",135,135,True),
 #tile2 cat 4
 Tile("You are walking along the path when you come across a cat.",None,1,True,itemCondID = 0,condYesLocations = (5,10)),
 Tile("Would you like to throw the "+(items[0])+" at the cat?",8,6,False),
 Tile("Would you like to leave the "+(items[0])+" on the ground?",7,9,False), 
 Tile("You leave the "+(items[0])+" on the ground and continue on your journey.",10,10,True,item = 0,isAppend = False),
-Tile("You throw the "+(items[0])+" at the cat which then attacks you.",13,13,True,item = 0,isAppend = False), ##__________________________________________________________skip to end
+Tile("You throw the "+(items[0])+" at the cat which then attacks you.",13,13,True,item = 0,isAppend = False), 
 Tile("You continue on your journey with the "+(items[0])+" in hand.",10,10,True),
 Tile("Would you like to stroke the cat?",12,11,False), 
 Tile("You leave the cat alone and continue on your journey.",13,13,True),
@@ -131,7 +138,7 @@ Tile("Would you like to whack the pedestrian with the "+(items[0])+"?",18,15,Fal
 Tile("You leave the pedestrian alone and continue on your journey.",16,16,True),
 Tile("Would you like to leave the "+(items[0])+" on the ground?",20,17,False),
 Tile("You continue on your journey past the pedestrian with the "+(items[0])+" in hand.",21,21,True),
-Tile("You smack the pedestrian with the "+(items[0])+" so he mugs you and steals your lunch.",21,21,True),        ##__________________________________________________________skip to end
+Tile("You smack the pedestrian with the "+(items[0])+" so he mugs you and steals your pants.",21,21,True),
 Tile("""The pedestrian says "hi" and smiles.  You then continue on your journey.""",21,21,True),
 Tile("You leave the "+(items[0])+" on the ground and continue.",21,21,True,item = 0,isAppend = False),
 #tile4 rubish bin beside garden 21
@@ -154,8 +161,8 @@ Tile("You are walking along the path when you come across a "+(items[2])+"! \n W
 Tile("You give the "+(items[2])+" a sandwich and continue.",41,41,True),
 Tile("Would you like to mock the "+(items[2])+"?",39,None,False,itemCondID = 0,condYesLocations = (37,40)),
 Tile("Would you like to throw the "+(items[0])+" at the "+(items[2])+"?",39,40,False),
-Tile("You throw the "+(items[0])+" at the "+(items[2])+".",39,39,True),                                              ##__________________________________________________________skip to end
-Tile("The "+(items[2])+" beats you and then proceeds to chase you out of the park!",41,41,True),
+Tile("You throw the "+(items[0])+" at the "+(items[2])+".",39,39,True),              
+Tile("The "+(items[2])+" beats you and then proceeds to steal your sandwitch!",41,41,True),
 Tile("You leave the "+(items[2])+" alone and continue on your journey.",41,41,True),
 #tile7 plastic bag 41
 Tile("You are walking along the path when you come across a "+(items[3])+"! \n Would you like to pick up the "+(items[3])+"?",43,42,False),
@@ -209,25 +216,25 @@ Tile("Would you like to leave "+(items[4])+" and the "+(items[6])+" on the beach
 Tile("You leave "+(items[4])+" and the "+(items[6])+" on the beach and continue on your journey.",90,90,True,item = 4,isAppend = False),
 Tile("You continue down the beach with the "+(items[6])+".",90,90,True,item = 6,isAppend = True),
 Tile("Would you like to use your teeth to cut the seal free from the "+(items[6])+"?",88,89,False),
-Tile("You cut the seal free from the "+(items[6])+" with your teeth, breaking a tooth. \n The seal is saved but you can't eat lunch now.",90,90,True),   ##_________________________________skip to end
+Tile("You cut the seal free from the "+(items[6])+" with your teeth, breaking a tooth. \n The seal is saved but you'll have a hefty dentist bill.",90,90,True), 
 Tile("You leave the seal wrapped in "+(items[6])+" to die and continue.",90,90,True),
 #tile12 fish 'n' chips in paper 90
 Tile("You are walking along the beach when you come across "+(items[7])+"! \n Would you like to pick up the "+(items[7])+"?",92,91,False),
 Tile("You leave the "+(items[7])+""" on the ground and try to continue 
 on your journey, BUT! A policeman sees you beside the """+(items[7])+""",
-he assumes they're yours and bans you from the beach.""",93,93,True), ##___________________________________________________________________________________________________________________skip to end
+he assumes they're yours and gives you a one million dollar fine.""",93,93,True), 
 Tile("You continue on your journey with the "+(items[7])+" in hand.",93,93,True,item = 7,isAppend = True),
 #tile13 dog walker 93
 Tile("You are walking along the beach when you come across a woman walking her dog.",None,1,True,itemCondID = 0,condYesLocations = (94,98)),
 Tile("Would you like to whack the woman walking her dog with the "+(items[0])+"?",97,94,False),
 Tile("Would you like to leave the "+(items[0])+" on the ground?",96,98,False),
 Tile("You drop the "+(items[0])+" and continue.",98,98,True),
-Tile("You try to smack the woman walking her dog with the "+(items[0])+" but her dog attacks you.",98,98,True),  ##_______________________________________________________skip to end
+Tile("You try to smack the woman walking her dog with the "+(items[0])+" but her dog attacks you.",98,98,True), 
 Tile("There is a surfer carving up the waves.",None,1,True,itemCondID = 4,condYesLocations = (99,103)),
 Tile("Would you like to throw "+(items[4])+" at woman walking her dog?",102,100,False),
 Tile("Would you like to leave "+(items[4])+" on the ground?",101,103,False),
 Tile("You leave "+(items[4])+" in the sand.",103,103,True),
-Tile("You try to throw "+(items[4])+" at the woman walking her dog but her dog attacks you.",103,103,True),  ##_____________________________________________________________skip to end
+Tile("You try to throw "+(items[4])+" at the woman walking her dog but her dog attacks you.",103,103,True), 
 Tile("The womans dog looks at you.",None,1,True,itemCondID = 7,condYesLocations = (104,109)),
 Tile("Would you like to throw the "+(items[7])+" at woman walking her dog?",108,105,False),
 Tile("Would you like to leave the "+(items[7])+" on the ground?",106,107,False),
@@ -264,7 +271,7 @@ Tile("Would you like to give "+(items[4])+" back to him?",133,132,False),
 Tile("You don't give "+(items[4])+" back to him and continue.",134,134,True),
 Tile("You give "+(items[4])+" back and continue.",134,134,True),
 #tile18 final destination 134
-Tile("You arive at your favourite bench with a recycling bin conveinently beside it.",None,None,None)]
+Tile("You arive at your favourite bench with a recycling bin conveinently beside it.",136,136,True,func=endCheck)]
 
 
 ##What makes it run
