@@ -1,4 +1,4 @@
-#20200603_environmentalAssessmentGUI_v1.31
+#20200605_environmentalAssessmentGUI_v1.32
 #ethanMclachlan with help from Chase Meister
 
 ##change log
@@ -65,6 +65,11 @@ def press(button):
             tile[current].yesLocation = tile[current].condYesLocations[0]
         else:
             tile[current].yesLocation = tile[current].condYesLocations[1]
+    if tile[current].noLocation is None:
+        if tile[current].itemCondID in holding:
+            tile[current].noLocation = tile[current].condYesLocations[0]
+        else:
+            tile[current].noLocation = tile[current].condYesLocations[1]    
             
     if(tile[current].isContinue):
         if button == "Continue":
@@ -109,7 +114,7 @@ Would you like to pick up the """+(items[0])+"?",2,3,False),
 Tile("You continue on your journey with the "+(items[0])+" in hand.",4,4,True,item = 0,isAppend = True),
 Tile("You leave the "+(items[0])+" on the ground and continue on your journey.",4,4,True),
 #tile2 cat
-Tile("You are walking along the path when you come across a cat.",None,None,True,itemCondID = 0,condYesLocations = (5,10)),
+Tile("You are walking along the path when you come across a cat.",None,1,True,itemCondID = 0,condYesLocations = (5,10)),
 Tile("Would you like to throw the "+(items[0])+" at the cat?",8,6,False),
 Tile("Would you like to leave the "+(items[0])+" on the ground?",7,9,False), 
 Tile("You leave the "+(items[0])+" on the ground and continue on your journey.",10,10,True,item = 0,isAppend = False),
@@ -119,7 +124,7 @@ Tile("Would you like to stroke the cat?",12,11,False),
 Tile("You leave the cat alone and continue on your journey.",13,13,True),
 Tile("You stroke the cat, it meows and you continue on your journey.",13,13,True),
 #tile3 pedestrian
-Tile("You are walking along the path when you come across a pedestrian.",None,None,True,itemCondID = 0,condYesLocations = (14,19)),
+Tile("You are walking along the path when you come across a pedestrian.",None,1,True,itemCondID = 0,condYesLocations = (14,19)),
 Tile("Would you like to whack the pedestrian with the "+(items[0])+"?",18,15,False),
 Tile("You leave the pedestrian alone and continue on your journey.",16,16,True),
 Tile("Would you like to leave the "+(items[0])+" on the ground?",20,17,False),
@@ -129,7 +134,7 @@ Tile("""The pedestrian says "hi" and smiles.  You then continue on your journey.
 Tile("You leave the "+(items[0])+" on the ground and continue.",21,21,True,item = 0,isAppend = False),
 #tile4 rubish bin beside garden
 Tile("""You are walking along the path when you come across a rubbish bin
-beside a bench looking over the beautiful garden.""",None,None,True,itemCondID = 0,condYesLocations = (22,23)),
+beside a bench looking over the beautiful garden.""",None,1,True,itemCondID = 0,condYesLocations = (22,23)),
 Tile("Would you like to dispose of the "+(items[0])+" in the rubbish bin?",24,25,False),
 Tile("You sit down on the bench to look at the garden.",28,28,True),
 Tile("You throw the "+(items[0])+" in the bin and sit down on the bench to look at the garden.",28,28,True,item = 0,isAppend = False),
@@ -139,6 +144,21 @@ Tile("You leave the "+(items[0])+" in the garden and continue on your journey.",
 Tile("Would you like to smell the flowers?",30,29,False),
 Tile("You admire the beautiful garden and then continue on your journey.",31,31,True),
 Tile("You smell the flowers and then continue on your journey.",31,31,True),
+#tile5 pile of leaves
+Tile("You are walking along the path when you come across a "+(items[1])+""".
+Would you like to sweep the """+(items[1])+" off the path?",32,33,False),
+Tile("You sweep the "+(items[1])+" off the path and continue.",34,34,True),
+Tile("You leave the "+(items[1])+" on the path and continue on your journey.",34,34,True), 
+#tile6 hobo
+Tile("You are walking along the path when you come across a "+(items[2])+"""!
+Would you like to give the """+(items[2])+" a sandwich from your lunch?",35,36,False),
+Tile("You give the "+(items[2])+" a sandwich and continue.",41,41,True),
+Tile("Would you like to mock the "+(items[2])+"?",39,None,False,itemCondID = 0,condYesLocations = (37,40)),
+Tile("Would you like to throw the "+(items[0])+" at the "+(items[2])+"?",39,40,False),
+Tile("You throw the "+(items[0])+" at the "+(items[2])+".",39,39,True),                                              ##__________________________________________________________skip to end
+Tile("The "+(items[2])+" beats you and then proceeds to chase you out of the park!",41,41,True),
+Tile("You leave the "+(items[2])+" alone and continue on your journey.",41,41,True)
+
 
 
 ]
@@ -149,22 +169,10 @@ tile[current].displayTile()
 # start the GUI
 app.go()
 
+
+
+
 """
-#tile5 pile of leaves
-("You are walking along the path when you come across a "+(items[1])+".
-Would you like to sweep the "+(items[1])+" off the path?")
-("You sweep the "+(items[1])+" off the path and continue.")
-("You leave the "+(items[1])+" on the path and continue on your journey.") 
-#tile6 hobo
-("You are walking along the path when you come across a "+(items[2])+"!
-Would you like to give the "+(items[2])+" a sandwich from your lunch?)
-"You give the "+(items[2])+" a sandwich and continue.")
-("Would you like to mock the "+(items[2])+"? 
-("Would you like to throw the "+(items[0])+" at the "+(items[2])+"?
-("You throw the "+(items[0])+" at the "+(items[2])
- ("The "+(items[2])+" beats you for mocking him and then proceeds to chase you out of the park!
- No beach for you!   GAME OVER")
-("You leave the "+(items[2])+" alone and continue on your journey.")
 #tile7 plastic bag
 ("You are walking along the path when you come across a "+(items[3])+"!
 Would you like to pick up the "+(items[3])+"?
