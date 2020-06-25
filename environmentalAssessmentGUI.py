@@ -1,14 +1,15 @@
-#20200618_environmentalAssessmentGUI_v1.41
+#20200622_environmentalAssessmentGUI_v1.42
 #ethanMclachlan
 
 ##change log
-#1.41 trying to get a working score 
+#1.41 finished game (not addng the "GAME OVER" bits as then Chase and T-Bone would never finish)
+#1.42 commented
 
 # import the library
 from appJar import gui
 
 ##Variables
-#items on pat
+#items on path
 items = ["plastic bottle","pile of leaves","hobo","plastic bag","the gardeners lost secateurs","dog poo",
         "nylon fishing line","descarded fish and chips in paper","batteries","litter","noDiscard"]
      
@@ -16,102 +17,102 @@ score = 0
 holding = []  #list of items you are holding.        
 
 ##Class and Function stuff
-class Tile:
+class Tile:  #a class to contain the tile variables, the answers and the possible outcomes in the list
     def __init__(self, text, yesLocation, noLocation, isContinue, addScore = 0, item = None, isAppend = None, itemCondID = None, condYesLocations = None, func = None):
-        self.text = text
-        self.yesLocation = yesLocation
-        self.noLocation = noLocation
-        self.isContinue = isContinue
-        self.addScore = addScore 
-        self.item = item
-        self.isAppend = isAppend
-        self.itemCondID = itemCondID
-        self.condYesLocations = condYesLocations
-        self.func = func
+        self.text = text  #is the question or statement
+        self.yesLocation = yesLocation  #is where to go to next if the answer is yes or continue
+        self.noLocation = noLocation  #is where you go to if the answer is no
+        self.isContinue = isContinue  #is if the question is a continue or a yes/no question
+        self.addScore = addScore  #adds to the score
+        self.item = item  #is the item that is checked by is append
+        self.isAppend = isAppend  #is wether to append or remove the item from the list
+        self.itemCondID = itemCondID  #checks if an item is in holding
+        self.condYesLocations = condYesLocations  #provides the locations of the next tile based on wether you have the item required
+        self.func = func  #runs the ending function 
         
     def displayTile(self):
-        global score
-        if self.func is not None:
+        global score  #had to make score global to add to it from within the class
+        if self.func is not None:  #checks to see if the end function should be run
             self.func()
-        app.setLabel("text",self.text)
-        if(self.isAppend != None):
-            self.appendRemove()
-        if len(holding) != 0:
+        app.setLabel("text",self.text)  #adds the text to the label to be displayed
+        if(self.isAppend != None): #adds or removes item from holding depending if is append is True or False
+            self.appendRemove()  
+        if len(holding) != 0: #if there is something in the list of holding it prints the list
             for things in holding:  
                 print ("["+items[things]+"]",end="")
             print()
         else:
-            print("[nothing in list]")
-        if self.addScore == 1:
+            print("[nothing in list]")  #prints if you are holding nothing
+        if self.addScore == 1:  #adds score
             score += 1        
             
     def appendRemove(self):
-        if(self.isAppend == True):
-            holding.append(self.item)
+        if(self.isAppend == True): 
+            holding.append(self.item)  #adds the item to the holding list
         elif(self.isAppend == False):
-            if(holding.count(self.item)):
-                holding.remove(self.item)
+            if(holding.count(self.item)):  #checks if the item is in the holding list
+                holding.remove(self.item)  #removes the item from the holding list
             
 
 def endCheck():
-    if len(holding) != 0 or "noDiscard" in holding:
+    if len(holding) != 0 and "noDiscard" in holding:  #checks to see if there is something in the holding list and if there is adds these tiles tothe list
         tile.append(Tile("Would you like to put all of the recycling in the recycling bin?",136,137,False))
         tile.append(Tile("You put all of the recycling in the bin sit down and enjoy your lunch. YOU WIN! \n\nScore = %d/30" % score,None,None,None))
         tile.append(Tile("You sit down and enjoy your lunch with your collection of recycling. YOU WIN! \n\nScore = %d/30" % score,None,None,None))
-    else:
+    else:  #if there is nothing in holding then it adds this tile to the list
         tile.append(Tile("You sit down and enjoy your lunch. YOU WIN! \n\nScore = %d/30" % score,None,None,None))
 
 def updateButtons():
-    if(tile[current].isContinue):
-        app.hideButton("No")
+    if(tile[current].isContinue):  #if the tile just needs continue buttton
+        app.hideButton("No")  #hides yes/no buttons
         app.hideButton("Yes")
-        app.showButton("Continue")
+        app.showButton("Continue")  #shows continue button
     elif tile[current].isContinue is None and tile[current].yesLocation is None and tile[current].noLocation is None:
-        print("finished")
+        print("finished")  #if the game is finished it hides all the buttons
         app.hideButton("No")
         app.hideButton("Yes")        
         app.hideButton("Continue")
-    else:
-        app.hideButton("Continue")
-        app.showButton("Yes")   
+    else:  #if the tlis needs yes/no buttons
+        app.hideButton("Continue")  #hides continue button
+        app.showButton("Yes")  #shows yes/no buttons
         app.showButton("No")
         
-def press(button):
+def press(button):  #where you go depending on which button you push
     global current
-    if tile[current].yesLocation is None:
-        if tile[current].itemCondID in holding:
+    if tile[current].yesLocation is None:  #if you press yes or continue and there is none in the yes location then you must be holding something to continue and if youre not you dont go to that tile
+        if tile[current].itemCondID in holding:  #checks if you are holding the item and then if you are sends you to the next tile
             tile[current].yesLocation = tile[current].condYesLocations[0]
-        else:
+        else:  #if youre not holding the item it sends you to an alternate tile
             tile[current].yesLocation = tile[current].condYesLocations[1]
-    if tile[current].noLocation is None:
+    if tile[current].noLocation is None:  #same as above but checks when answer picked is no
         if tile[current].itemCondID in holding:
             tile[current].noLocation = tile[current].condYesLocations[0]
         else:
             tile[current].noLocation = tile[current].condYesLocations[1]    
             
-    if(tile[current].isContinue):
-        if button == "Continue":
+    if(tile[current].isContinue):  #if the continue button is pressed it goes to the next tile wich is the one in the yes location
+        if button == "Continue":  
             current = tile[current].yesLocation
     else:
-        if button == "Yes":
+        if button == "Yes":  #if the yes button is ressed you go to the yes location
             current = tile[current].yesLocation
-        elif button == "No":
+        elif button == "No":  #if the no button is pressed you go to the no location
             current = tile[current].noLocation
-    tile[current].displayTile()        
-    updateButtons()
+    tile[current].displayTile()  #displays the next tile        
+    updateButtons()  #updates the buttons
 
 ##Setup of questions and GUI          
 current = 0 # so it starts at tile 0 in the list
 
 # create a GUI variable called app
-app = gui("Environmental Game","900x175")
-app.addLabel("text")
-app.addButtons(["Yes","No"],press)
-app.addButton("Continue",press)
+app = gui("Environmental Game","900x175")  #creates a gui named Environmental game 
+app.addLabel("text")  #adds text to the gui
+app.addButtons(["Yes","No"],press)  #adds yes/no buttons to the gui
+app.addButton("Continue",press)  #adds continue button to the gui
 
 # question/statement, what it goes to if you press yes or continue write none if there is a condition, what it goes to if you press no, false is yes\no and true is continue, if we want to change score addScore = 1, any required key words(for condition yesLocation has to == none and no Location has to == none
 
-tile = [
+tile = [ #list of print statements and the info that applies to them
 #scenario 0
 Tile("""You are on your way to the beach where you will sit in your favourite seat, admire 
 the view, breathe in the fresh sea air and eat lunch. To get to your favourite bench 
@@ -192,7 +193,7 @@ Tile("You continue with "+(items[4])+" in hand.",64,64,True,addScore = 1),
 #tile10 dog poo 64
 Tile("You are walking along the beach when you come across "+(items[5])+" beside a rubbish bin.",None,1,True,itemCondID = 3,condYesLocations = (65,70)),
 Tile("Would you like to pick up the "+(items[5])+" with the "+(items[3])+" and dispose of it in the rubbish bin?",66,67,False), 
-Tile("You dispose of the "+(items[5])+" in the rubbish bin.",67,67,False,addScore = 1), 
+Tile("You dispose of the "+(items[5])+" in the rubbish bin.",67,67,True,addScore = 1), 
 Tile("You see a pile of rubbish beside the bin. Would you like to put it in the bin?",68,69,False),  
 Tile("You put the rubbish in the bin and continue.",None,1,True,itemCondID = 3,condYesLocations = (71,73),addScore = 1),
 Tile("You leave the rubbish and continue down the beach.",None,1,True,itemCondID = 3,condYesLocations = (71,73)),
@@ -272,10 +273,9 @@ Tile("You give "+(items[4])+" back and continue.",134,134,True,addScore = 1),
 #tile18 final destination 134
 Tile("You arive at your favourite bench with a recycling bin conveinently beside it.",135,135,True,func=endCheck)]
 
-
 ##What makes it run
-updateButtons()
-tile[current].displayTile()
+updateButtons()  #this changes the buttons either yes/no or continue
+tile[current].displayTile()  #displays the next tile in the list
 
-# start the GUI
+# starts the GUI
 app.go()
