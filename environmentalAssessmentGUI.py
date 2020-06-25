@@ -1,9 +1,9 @@
-#20200602_environmentalAssessmentGUI_v1.3
-#ethanMclachlan with help from Chase Meister, T Bone and mlj
+#20200603_environmentalAssessmentGUI_v1.31
+#ethanMclachlan with help from Chase Meister
 
 ##change log
-#1.31 tile 1 and 2
-#1.32 tile 3 and 4
+#1.3 tile 1 and 2
+#1.31 tile 3 and 4
 # etc
 #1.4 when everything works and add game tiles and then score
 
@@ -113,12 +113,35 @@ Tile("You are walking along the path when you come across a cat.",None,None,True
 Tile("Would you like to throw the "+(items[0])+" at the cat?",8,6,False),
 Tile("Would you like to leave the "+(items[0])+" on the ground?",7,9,False), 
 Tile("You leave the "+(items[0])+" on the ground and continue on your journey.",10,10,True,item = 0,isAppend = False),
-Tile("You throw the "+(items[0])+" at the cat which then attacks you.",13,13,True,item = 0,isAppend = False),
+Tile("You throw the "+(items[0])+" at the cat which then attacks you.",13,13,True,item = 0,isAppend = False), ##__________________________________________________________skip to end
 Tile("You continue on your journey with the "+(items[0])+" in hand.",10,10,True),
 Tile("Would you like to stroke the cat?",12,11,False), 
 Tile("You leave the cat alone and continue on your journey.",13,13,True),
-Tile("You stroke the cat, it meows and you continue on your journey.",13,13,True) ]
+Tile("You stroke the cat, it meows and you continue on your journey.",13,13,True),
+#tile3 pedestrian
+Tile("You are walking along the path when you come across a pedestrian.",None,None,True,itemCondID = 0,condYesLocations = (14,19)),
+Tile("Would you like to whack the pedestrian with the "+(items[0])+"?",18,15,False),
+Tile("You leave the pedestrian alone and continue on your journey.",16,16,True),
+Tile("Would you like to leave the "+(items[0])+" on the ground?",20,17,False),
+Tile("You continue on your journey past the pedestrian with the "+(items[0])+" in hand.",21,21,True),
+Tile("You smack the pedestrian with the "+(items[0])+" so he mugs you and steals your lunch.",21,21,True),        ##__________________________________________________________skip to end
+Tile("""The pedestrian says "hi" and smiles.  You then continue on your journey.""",21,21,True),
+Tile("You leave the "+(items[0])+" on the ground and continue.",21,21,True,item = 0,isAppend = False),
+#tile4 rubish bin beside garden
+Tile("""You are walking along the path when you come across a rubbish bin
+beside a bench looking over the beautiful garden.""",None,None,True,itemCondID = 0,condYesLocations = (22,23)),
+Tile("Would you like to dispose of the "+(items[0])+" in the rubbish bin?",24,25,False),
+Tile("You sit down on the bench to look at the garden.",28,28,True),
+Tile("You throw the "+(items[0])+" in the bin and sit down on the bench to look at the garden.",28,28,True,item = 0,isAppend = False),
+Tile("Would you like to leave the "+(items[0])+" in the garden?",27,26,False), 
+Tile("You admire the beautiful garden and then continue on your journey.",31,31,True),
+Tile("You leave the "+(items[0])+" in the garden and continue on your journey.",31,31,True,item = 0,isAppend = False),
+Tile("Would you like to smell the flowers?",30,29,False),
+Tile("You admire the beautiful garden and then continue on your journey.",31,31,True),
+Tile("You smell the flowers and then continue on your journey.",31,31,True),
 
+
+]
 ##What makes it run
 updateButtons()
 tile[current].displayTile()
@@ -126,72 +149,49 @@ tile[current].displayTile()
 # start the GUI
 app.go()
 
-
 """
-#tile3 pedestrian
-Tile("You are walking along the path when you come across a pedestrian.")
-"Would you like to whack the pedestrian with the "+(obstacles[0].name)+"?
-"You leave the pedestrian alone and continue on your journey.")
-"Would you like to leave the "+(obstacles[0].name)+" on the ground? 
-"You leave the "+(obstacles[0].name)+" on the ground and continue on your journey.")
-("You continue on your journey past the pedestrian with the "+(obstacles[0].name)+" in hand.")
-("You smack the pedestrian with the "+(obstacles[0].name)+" so he mugs you and steals your lunch.
-No beach for you!   GAME OVER")
-("The pedestrian says "hi" and smiles.  You then continue on your journey.")
-#tile4 rubish bin beside garden
-"You are walking along the path when you come across a rubbish bin beside a bench 
-looking over the beautiful garden.")
-("Would you like to dispose of the "+(obstacles[0].name)+" in the rubbish bin?"
-("You sit down on the bench to look at the garden.")
-("You throw the "+(obstacles[0].name)+" in the bin and sit down on the bench to look at the garden.")
-("Would you like to leave the "+(obstacles[0].name)+" in the garden? 
-("You admire the beautiful garden and then continue on your journey.")
-("You leave the "+(obstacles[0].name)+" in the garden and continue on your journey.")
-("Would you like to smell the flowers?
-("You admire the beautiful garden and then continue on your journey.")
-"You smell the flowers and then continue on your journey.")
 #tile5 pile of leaves
-("You are walking along the path when you come across a "+(obstacles[1].name)+".
-Would you like to sweep the "+(obstacles[1].name)+" off the path?")
-("You sweep the "+(obstacles[1].name)+" off the path and continue.")
-("You leave the "+(obstacles[1].name)+" on the path and continue on your journey.") 
+("You are walking along the path when you come across a "+(items[1])+".
+Would you like to sweep the "+(items[1])+" off the path?")
+("You sweep the "+(items[1])+" off the path and continue.")
+("You leave the "+(items[1])+" on the path and continue on your journey.") 
 #tile6 hobo
-("You are walking along the path when you come across a "+(obstacles[2].name)+"!
-Would you like to give the "+(obstacles[2].name)+" a sandwich from your lunch?)
-"You give the "+(obstacles[2].name)+" a sandwich and continue.")
-("Would you like to mock the "+(obstacles[2].name)+"? 
-("Would you like to throw the "+(obstacles[0].name)+" at the "+(obstacles[2].name)+"?
-("You throw the "+(obstacles[0].name)+" at the "+(obstacles[2].name)
- ("The "+(obstacles[2].name)+" beats you for mocking him and then proceeds to chase you out of the park!
+("You are walking along the path when you come across a "+(items[2])+"!
+Would you like to give the "+(items[2])+" a sandwich from your lunch?)
+"You give the "+(items[2])+" a sandwich and continue.")
+("Would you like to mock the "+(items[2])+"? 
+("Would you like to throw the "+(items[0])+" at the "+(items[2])+"?
+("You throw the "+(items[0])+" at the "+(items[2])
+ ("The "+(items[2])+" beats you for mocking him and then proceeds to chase you out of the park!
  No beach for you!   GAME OVER")
-("You leave the "+(obstacles[2].name)+" alone and continue on your journey.")
+("You leave the "+(items[2])+" alone and continue on your journey.")
 #tile7 plastic bag
-("You are walking along the path when you come across a "+(obstacles[3].name)+"!
-Would you like to pick up the "+(obstacles[3].name)+"?
-("You leave the "+(obstacles[3].name)+" on the ground and continue on your journey.")
-("Would you like to put the "+(obstacles[3].name)+" in the bushes?
-("You put the "+(obstacles[3].name)+" in the bushes the gardener yells at you and you continue 
+("You are walking along the path when you come across a "+(items[3])+"!
+Would you like to pick up the "+(items[3])+"?
+("You leave the "+(items[3])+" on the ground and continue on your journey.")
+("Would you like to put the "+(items[3])+" in the bushes?
+("You put the "+(items[3])+" in the bushes the gardener yells at you and you continue 
 on your journey.")
-("You continue on your journey with the "+(obstacles[3].name)+" in hand.")
+("You continue on your journey with the "+(items[3])+" in hand.")
 #tile8 secateurs
-("You are walking along the path when you come across "+(obstacles[4].name)+"!
-Would you like to pick up "+(obstacles[4].name)+"?
-("You leave "+(obstacles[4].name)+" on the ground and continue on your journey.")
-("You pick up "+(obstacles[4].name)+".")
-("Would you like to leave "+(obstacles[4].name)+" beside a tree? 
-("You put "+(obstacles[4].name)+" beside the tree and continue.")
-("You continue on your journey with "+(obstacles[4].name)+" in hand.")
+("You are walking along the path when you come across "+(items[4])+"!
+Would you like to pick up "+(items[4])+"?
+("You leave "+(items[4])+" on the ground and continue on your journey.")
+("You pick up "+(items[4])+".")
+("Would you like to leave "+(items[4])+" beside a tree? 
+("You put "+(items[4])+" beside the tree and continue.")
+("You continue on your journey with "+(items[4])+" in hand.")
 #tile9 arrive at beach
 ("You arrive at the beach and set off walking along it to your favourite seat.")
-("Would you like to leave the "+(obstacles[0].name)+" on the sand?
-("You drop the "+(obstacles[0].name)+" and continue.")
-("You don't leave the "+(obstacles[0].name)+" on the sand and continue.")
-("Would you like to leave the "+(obstacles[3].name)+" in the sand?
-("You drop the "+(obstacles[3].name)+" and continue.")
-("You don't leave the "+(obstacles[3].name)+" in the sand and continue.")
-("Would you like to leave "+(obstacles[4].name)+" on the sand?
-("You drop "+(obstacles[4].name)+" and continue.")
-("You continue with "+(obstacles[4].name)+" in hand.")
+("Would you like to leave the "+(items[0])+" on the sand?
+("You drop the "+(items[0])+" and continue.")
+("You don't leave the "+(items[0])+" on the sand and continue.")
+("Would you like to leave the "+(items[3])+" in the sand?
+("You drop the "+(items[3])+" and continue.")
+("You don't leave the "+(items[3])+" in the sand and continue.")
+("Would you like to leave "+(items[4])+" on the sand?
+("You drop "+(items[4])+" and continue.")
+("You continue with "+(items[4])+" in hand.")
 #tile10 dog poo """
 
 
